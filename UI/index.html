@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Ваш сайт для покупки билетов на поезда. Узнайте расписание, забронируйте и оплатите билеты онлайн. Удобный интерфейс и поддержка пользователей.">
+	<meta name="keywords" content="покупка билетов, билеты на поезд, ж/д вокзал, бронирование билетов, онлайн оплата">
+	<title>Железные дороги</title>
+	<link rel="icon" href="resources/Logo.ico" type="image/x-icon">
+	<link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shanti:wght@400&display=swap"/>
+</head>
+<body>
+
+<div id="home-page" class="form">
+	<div class="home-page"> 
+		<header>
+			<a href="#log-in" class="button_text">
+				<button class="log_in_button">Вход</button> 
+			</a>
+			<a href="#sign-in" class="button_text">
+				<button class="sign_in_button">Регистрация</button> 
+			</a>
+			<a href="#menu" class="button_text">
+				<button class="menu_button">Меню</button>
+			</a> 
+			<div class="header_underline"></div>
+			<a href="#home-page" class="button_text">
+			<img class="logo_icon" alt="Company logo" src="resources/Logo.png">
+			</a>
+			<img class="log_in_icon" alt="Sign in icon" src="resources/Log in.png">
+			<img class="sign_in_icon" alt="Log in icon" src="resources/Sign in.png">
+		</header>
+		
+		<main>
+			<img class="news1_icon" alt="News 1" src="resources/News-1.png">
+			<div class="news1_text_header">Счастливого путешествия в Казахстан!</div>
+			<div class="news1_main_text">Наши поезда обеспечат вам комфортное и безопасное путешествие в Казахстан. Насладитесь прекрасными видами и удобствами в пути — мы позаботимся о вашем комфорте!</div>
+			<img class="news2_icon" alt="News 2" src="resources/News-2.png">
+			<div class="news2_text_header">Скоро наши поезда выйдут на орбиту!</div>
+			<div class="news2_main_text">С нами, хоть в космос! Комфортные поездки, захватывающие маршруты и сервис на высоте — ваши путешествия выходят на новый уровень.</div>
+			<a href="#error" class="button_text">
+				<button class="more_button">Подробнее-></button>
+			</a>
+			<div class="header_gradient"></div> 
+			<div class="footer_gradient"></div>	
+		</main>
+		
+		<footer> 
+			<div class="footer_background"></div>
+			<div class="footer_upperline"></div> 
+			<div class="copyright">© 2024 Kot&Co.</div> 
+			<div class="contacts"> 
+				<span class="text"> 
+					<p class="paragraph">Телефон: +375 (17) 111-22-33</p> 
+					<p class="paragraph">e-mail: Railways@rail.by</p> 
+				</span> 
+			</div>
+			<a href="#faq" class="button_text">
+				<div class="faq">FAQ</div> 
+			</a>
+		</footer> 
+	</div>
+</div> 
+
+<div id="menu" class="form">
+	<div class="menu"> 
+		<a href="#error" class="button_text">
+			<button class="purchased_tickets_button">Купленные билеты</button> 
+		</a>
+		<a href="#error" class="button_text">
+			<button class="booked_tickets_button">Забронированные билеты</button> 
+		</a>
+		<a href="#search" class="button_text">
+			<button class="searching">Поиск</button> 
+		</a>
+	</div> 
+</div>
+
+<div id="log-in" class="form">
+	<a href="#home-page" class="button_text">
+		<div class="blacking"></div>
+	</a>
+	<div class="log-in">
+		<div class="log_in_background"></div>
+		<div class="login_e-mail">Логин (e-mail):</div>
+		<input type="text" class="input_login" placeholder="Введите логин"></input>
+		<div class="password">Пароль:</div>
+		<input type="text" class="input_password" placeholder="Введите пароль"></input>
+		<a href="#error" class="button_text">
+			<button class="in_button">Вход</button>
+		</a>
+	</div>
+</div>
+
+<div id="sign-in" class="form">
+	<a href="#home-page" class="button_text">
+		<div class="blacking"></div>
+	</a>
+	<div class="sign-in">
+		<div class="sign_in_background"></div>
+		<div class="FIO">ФИО:</div>
+		<input type="text" class="input_FIO" placeholder="Введите ФИО"></input>
+		<div class="passport">Серия и номер паспорта:</div>
+		<input type="text" class="input_passport" placeholder="Введите паспортные данные"></input>
+		<div class="e-mail">E-mail:</div>
+		<input type="text" class="input_e-mail" placeholder="Введите e-mail"></input>
+		<div class="password_creation">Пароль:</div>
+		<input type="text" class="input_password_creation" placeholder="Введите пароль"></input>
+		<div class="password_repeat">Повторите пароль:</div>
+		<input type="text" class="input_password_repeat" placeholder="Повторите пароль"></input>
+		<a href="#error" class="button_text">
+			<button class="sign_button">Вход</button>
+		</a>
+	</div>
+</div>
+
+<div id="error" class="form">
+	<a href="#home-page" class="button_text">
+		<div class="blacking"></div>
+	</a>
+	<div class="error">
+		<div class="error_background"></div>
+		<div class="error_header">Произошла ошибка</div>
+		<div class="error_text">Попробуйте позже снова</div>
+		<a href="#home-page" class="button_text">
+			<button class="ok_button">ОК</button>
+		</a>
+	</div>
+</div>
+
+<div id="search" class="form">
+	<a href="#home-page" class="button_text">
+		<div class="blacking"></div>
+	</a>
+	<div class="search">
+		<div class="search_background"></div>
+		<div class="start_point">Начальный пункт:</div>
+		<input type="text" class="input_start_point" placeholder="Введите пункт отправления"></input>
+		<div class="finish_point">Конечный пункт:</div>
+		<input type="text" class="input_finish_point" placeholder="Введите пункт прибытия"></input>
+		<div class="date">Дата отправления - прибытия:</div>
+		<input type="datetime-local" class="input_date_start"></input>
+		<input type="datetime-local" class="input_date_finish"></input>
+		<div class="dash1"></div>
+		<div class="price">Минимальная - максимальная стоимость:</div>
+		<input type="number" class="input_price_min" placeholder="Введите минимальную стоимость" min="0" step="0.01">
+		<input type="number" class="input_price_max" placeholder="Введите максимальную стоимость" min="0" step="0.01">
+		<div class="dash2"></div>
+		<div class="type">Вид билета:</div>
+		<select id="options" name="options" class="input_type">
+			<option value="compartment">Купе</option>
+			<option value="reserved_seat">Плацкарт</option>
+			<option value="unreserved_seat">Сидячий</option>
+			<option value="first-class_sleeper">СВ</option>
+		</select>
+		<a href="#browsing" class="button_text">
+			<button class="search_button">Поиск</button>
+		</a>
+	</div>
+</div>
+
+<div id="browsing" class="form">
+	<a href="#home-page" class="button_text">
+		<div class="blacking"></div>
+	</a>
+	<div class="browsing">
+		<div class="browsing_background"></div>
+		<div class="browsing_header">По вашему запросу ничего не нашлось</div>
+		<div class="browsing_text">Попробуйте позже снова</div>
+		<a href="#home-page" class="button_text">
+			<button class="ok_button">ОК</button>
+		</a>
+	</div>
+</div>
+
+<div id="faq" class="form">
+	<a href="#home-page" class="button_text">
+		<div class="blacking"></div>
+	</a>
+	<div class="faq_form">
+		<div class="faq_background"></div>
+		<div class="faq_header">Произошла ошибка</div>
+		<div class="faq_text">У вас не могло возникнуть вопросов, так как наш UX дизайнер слишком хорошо постарался. Подумайте еще раз.</div>
+		<a href="#home-page" class="button_text">
+			<button class="ok_button">ОК</button>
+		</a>
+	</div>
+</div>
+
+</body>
+</html>
