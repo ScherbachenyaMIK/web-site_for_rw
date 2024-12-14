@@ -1,16 +1,8 @@
 .form {
    display: none;
 }
-#menu:target, #log-in:target, #sign-in:target, #error:target, #search:target, #browsing:target, #faq:target {
-   display: block;
-}
-#home-page {
-   display: block;
-}
-.button_text {
-   color: inherit; 
-   font: inherit; 
-   text-decoration: inherit; 
+.form.active {
+    display: block;
 }
 .log_in_button { 
    position: absolute; 
@@ -65,9 +57,9 @@
    font: inherit; 
    cursor: pointer; 
 } 
-.menu_button:hover { 
+.menu_button.hover { 
    background-color: #ee6a59; 
-} 
+}
 .header_underline { 
    position: absolute; 
    top: 6.188rem; 
@@ -921,6 +913,146 @@
    color: var(--color-antiquewhite);
    font-family: var(--font-shanti);
    pointer-events: none;
+}
+
+.content_container {
+	width: 80%;
+	position: absolute;
+    left: 10%;
+    top: 170px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+    gap: 20px;
+}
+.ticket_hb {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.ticket_container {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+    gap: 20px;
+}
+.ticket_container > * {
+    width: 100%;
+}
+.info_vb {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	width: 100%;
+}
+.info_container {
+	width: 90%;
+	display: flex;
+    gap: 10px;
+	align-items: center;
+	justify-content: center;
+}
+.ticket_background {
+    width: 100%;
+    height: 200px;
+	display: flex;
+    background-color: var(--color-gainsboro);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.browsing_buttons_container {
+	width: 100%;
+	display: flex;
+    gap: 10px;
+}
+.on_home_page_button {
+   flex-grow: 1;
+   flex-basis: 0;
+   background-color: #f9ac67;
+   align-items: center;
+   text-align: center;
+   color: #000;
+   font-size: inherit;
+   font: inherit;
+   height: 60px;
+   cursor: pointer;
+}
+.on_home_page_button:hover { 
+   background-color: #ee6a59;
+}
+.on_search_button {
+   flex-grow: 1;
+   flex-basis: 0;
+   background-color: #f9ac67;
+   align-items: center;
+   text-align: center;
+   color: #000;
+   font-size: inherit;
+   font: inherit;
+   height: 60px;
+   cursor: pointer;
+}
+.on_search_button:hover { 
+   background-color: #ee6a59;
+}
+.prev-button {
+    background-color: #f9ac67;
+    align-items: center; 
+    text-align: center;
+    color: #000;
+    font-size: inherit;
+    font: inherit;
+    height: 60px;
+    width: 60px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.prev-button:hover { 
+    background-color: #ee6a59;
+}
+.next-button {
+    background-color: #f9ac67;
+    align-items: center; 
+    text-align: center;
+    color: #000;
+    font-size: inherit;
+    font: inherit;
+    height: 60px;
+    width: 60px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.next-button:hover { 
+    background-color: #ee6a59;
+}
+.ticket_field {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+	font-size: 1.5rem;
+    color: #000;
+	flex: 1;
+	margin: 10px 0;
+}
+.ticket_field label {
+    font-weight: bold;
+    margin-right: 10px;
+	white-space: nowrap;
+}
+.ticket_field span {
+    padding: 4px 8px;
+	background-color: #f9f9f9;
+    border-radius: 4px;
 }
 
 body { 
