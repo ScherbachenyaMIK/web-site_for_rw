@@ -205,135 +205,174 @@ class ObjInfManager {
 	}
 }
 
-let currentPage;
-let filteredTickets;
-
-function navigateTo(formId) {
-    document.querySelectorAll('.form').forEach(form => {
-        form.classList.remove('active');
-    });
-    const home = document.getElementById('home-page');
-	if (formId === 'home-page') {
-		home.classList.add('active');
-		return;
+class Validator {
+	static validateFIO(FIO) {
+		const FIORegex = /^[A-Za-zА-яа-я]+$/;
+		const parts = FIO.split(' ');
+		let isValid = true;
+		parts.forEach(part => {
+			if (isValid) { 
+			isValid = FIORegex.test(part)
+			}
+		})
+		return isValid && parts.length === 3;
 	}
-	if (formId === 'browsing') {
-		const targetForm = document.getElementById(formId);
-		targetForm.classList.add('active');
-		findTickets();
-		currentPage = 0;
-		return;
+	static validatePassport(passport) {
+		const passportRegex = /^[A-Za-z]{2}\d{7}$/;
+		return passportRegex.test(passport.trim());
 	}
-    const targetForm = document.getElementById(formId);
-    if (targetForm) {
-		home.classList.add('active');
-        targetForm.classList.add('active');
-    } else {
-        console.error(`Form with id "${formId}" not found.`);
-    }
+	static validateEmail(email) {
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		return emailRegex.test(email.trim());
+	}
+	static validatePassword(password) {
+		return password.trim().length >= 8;
+	}
+	static validatePasswordRepeat(password, password_repeat) {
+		return password_repeat === password;
+	}
 }
 
-const home = document.getElementById('home-page');
-home.classList.add('active');
+class ViewModel {
+	#currentPage;
+	#filteredTickets;
+	#ticketManager;
+	#townManager;
+	#ticketTypeManager;
+	#isAutorized;
+	
+	constructor() {
+		const home = document.getElementById('home-page');
+		home.classList.add('active');
+		this.#ticketTypeManager = new ObjInfManager('TicketType');
+		this.#townManager = new ObjInfManager('Town');
+		this.#ticketManager = new ObjInfManager('Ticket');
+	}
+		
+	save() {
+		const tickets = this.#ticketManager.getObjs().map(ticket => ({
+			start_place: ticket.Obj.start_place,
+			end_place: ticket.Obj.end_place,
+			start_date: ticket.Obj.start_date.toISOString(),
+			finish_date: ticket.Obj.finish_date.toISOString(),
+			cost: ticket.Obj.cost,
+			type: ticket.Obj.type,
+			purchased: ticket.Obj.purchased,
+		}));
+		localStorage.setItem('tickets', JSON.stringify(tickets));
+		
+		const towns = this.#townManager.getObjs().map(town => ({
+			value: town.Obj.value,
+			text: town.Obj.text,
+		}));
+		localStorage.setItem('towns', JSON.stringify(towns));
+		
+		const ticketTypes = this.#ticketTypeManager.getObjs().map(ticketType => ({
+			value: ticketType.Obj.value,
+			text: ticketType.Obj.text,
+		}));
+		localStorage.setItem('ticketTypes', JSON.stringify(ticketTypes));
 
-const button = document.getElementById('menu-button');
-const menu = document.getElementById('menu');
-let isHovering = false;
-button.addEventListener('mouseenter', () => {
-    button.classList.add('hover');
-    menu.classList.add('active');
-	isHovering = true;
-});
-button.addEventListener('mouseleave', () => {
-    isHovering = false;
-	setTimeout(() => {
-        if (!isHovering) {
-			button.classList.remove('hover');
-            menu.classList.remove('active');
-        }
-    }, 50);
-});
-menu.addEventListener('mouseenter', () => {
-    button.classList.add('hover');
-    menu.classList.add('active');
-	isHovering = true;
-});
-menu.addEventListener('mouseleave', () => {
-    isHovering = false;
-	setTimeout(() => {
-        if (!isHovering) {
-			button.classList.remove('hover');
-            menu.classList.remove('active');
-        }
-    }, 50);
-});
-
-const ticketTypeManager = new ObjInfManager('TicketType');
-ticketTypeManager.addObj(new TicketType('none', '...'));
-ticketTypeManager.addObj(new TicketType('compartment', 'Купе'));
-ticketTypeManager.addObj(new TicketType('reserved_seat', 'Плацкарт'));
-ticketTypeManager.addObj(new TicketType('unreserved_seat', 'Сидячий'));
-ticketTypeManager.addObj(new TicketType('first-class_sleeper', 'СВ'));
-ticketTypeManager.getObjs().forEach(item => {
-    const option = document.createElement('option');
-    option.value = item.Obj.value;
-    option.textContent = item.Obj.text;
-	selectBox = document.getElementById('type')
-    selectBox.appendChild(option);
-});
-
-const townManager = new ObjInfManager('Town');
-townManager.addAll([
-	new Town("none", "..."),
-	new Town("Moscow", "Москва"),
-	new Town("Saint-Petersburg", "Санкт-Петербург"),
-	new Town("Novosibirsk", "Новосибирск"),
-	new Town("Yekaterinburg", "Екатеринбург"),
-	new Town("Vladivostok", "Владивосток"),
-	new Town("Rostov-on-Don", "Ростов-на-Дону"),
-	new Town("Krasnoyarsk", "Красноярск"),
-	new Town("Volgograd", "Волгоград"),
-	new Town("Samara", "Самара"),
-	new Town("Ufa", "Уфа")
-]);
-townManager.getObjs().forEach(item => {
-    const option1 = document.createElement('option');
-    option1.value = item.Obj.value;
-    option1.textContent = item.Obj.text;
-	const option2 = document.createElement('option');
-	option2.value = item.Obj.value;
-    option2.textContent = item.Obj.text;
-	selectBox = document.getElementById('start-point')
-    selectBox.appendChild(option1);
-	selectBox = document.getElementById('finish-point')
-    selectBox.appendChild(option2);
-});
-
-const ticketManager = new ObjInfManager('Ticket');
-ticketManager.addAll([
-	new Ticket("Moscow", "Saint-Petersburg", new Date(2024, 11, 27, 6, 20, 0), new Date(2024, 11, 27, 12, 40, 0), 2500, "unreserved_seat", false),
-    new Ticket("Novosibirsk", "Yekaterinburg", new Date(2024, 11, 28, 8, 30, 0), new Date(2024, 11, 28, 16, 45, 0), 3200, "reserved_seat", true),
-    new Ticket("Vladivostok", "Moscow", new Date(2025, 0, 1, 14, 15, 0), new Date(2025, 0, 3, 9, 10, 0), 12000, "first-class_sleeper", false),
-    new Ticket("Samara", "Ufa", new Date(2024, 11, 29, 5, 0, 0), new Date(2024, 11, 29, 7, 45, 0), 1500, "compartment", true),
-    new Ticket("Saint-Petersburg", "Krasnoyarsk", new Date(2024, 11, 30, 22, 0, 0), new Date(2025, 0, 1, 7, 0, 0), 7800, "first-class_sleeper", true),
-    new Ticket("Yekaterinburg", "Rostov-on-Don", new Date(2024, 11, 31, 10, 20, 0), new Date(2025, 0, 1, 18, 15, 0), 4500, "reserved_seat", false),
-    new Ticket("Volgograd", "Samara", new Date(2024, 11, 26, 11, 40, 0), new Date(2024, 11, 26, 15, 0, 0), 2300, "unreserved_seat", true),
-    new Ticket("Rostov-on-Don", "Ufa", new Date(2024, 11, 25, 9, 10, 0), new Date(2024, 11, 25, 20, 30, 0), 3800, "compartment", false),
-    new Ticket("Krasnoyarsk", "Volgograd", new Date(2024, 11, 24, 12, 0, 0), new Date(2024, 11, 25, 6, 15, 0), 8900, "first-class_sleeper", true),
-    new Ticket("Samara", "Saint-Petersburg", new Date(2024, 11, 23, 15, 45, 0), new Date(2024, 11, 24, 12, 0, 0), 5600, "reserved_seat", false),
-    new Ticket("Ufa", "Moscow", new Date(2024, 11, 22, 16, 20, 0), new Date(2024, 11, 23, 7, 40, 0), 2900, "unreserved_seat", true),
-    new Ticket("Moscow", "Novosibirsk", new Date(2024, 11, 21, 19, 0, 0), new Date(2024, 11, 22, 23, 15, 0), 6700, "compartment", false),
-    new Ticket("Saint-Petersburg", "Yekaterinburg", new Date(2024, 11, 20, 18, 15, 0), new Date(2024, 11, 21, 15, 0, 0), 5200, "reserved_seat", true),
-    new Ticket("Novosibirsk", "Vladivostok", new Date(2024, 11, 19, 21, 30, 0), new Date(2024, 11, 22, 8, 0, 0), 10500, "first-class_sleeper", false),
-    new Ticket("Krasnoyarsk", "Moscow", new Date(2024, 11, 18, 20, 0, 0), new Date(2024, 11, 20, 7, 30, 0), 7800, "compartment", true),
-    new Ticket("Volgograd", "Saint-Petersburg", new Date(2024, 11, 17, 10, 20, 0), new Date(2024, 11, 18, 4, 0, 0), 4600, "reserved_seat", false),
-    new Ticket("Samara", "Rostov-on-Don", new Date(2024, 11, 16, 8, 30, 0), new Date(2024, 11, 16, 14, 50, 0), 2400, "unreserved_seat", true),
-    new Ticket("Ufa", "Krasnoyarsk", new Date(2024, 11, 15, 6, 0, 0), new Date(2024, 11, 16, 22, 0, 0), 6700, "first-class_sleeper", false),
-    new Ticket("Rostov-on-Don", "Vladivostok", new Date(2024, 11, 14, 14, 15, 0), new Date(2024, 11, 17, 18, 40, 0), 15000, "compartment", true),
-    new Ticket("Moscow", "Volgograd", new Date(2024, 11, 13, 5, 30, 0), new Date(2024, 11, 13, 13, 45, 0), 2100, "reserved_seat", false)
-]);
-
-const ticketTemplate = `
+		localStorage.setItem('isAutorized', this.#isAutorized);
+	}
+	
+	restore() {
+		const storedTicketTypes = JSON.parse(localStorage.getItem('ticketTypes'));
+		storedTicketTypes.forEach(({ value, text }) => this.#ticketTypeManager.addObj(new TicketType(value, text)));
+		this.#ticketTypeManager.getObjs().forEach(item => {
+			const option = document.createElement('option');
+			option.value = item.Obj.value;
+			option.textContent = item.Obj.text;
+			let selectBox = document.getElementById('type');
+			selectBox.appendChild(option);
+		});
+		const storedTowns = JSON.parse(localStorage.getItem('towns'));
+		storedTowns.forEach(({ value, text }) => this.#townManager.addObj(new Town(value, text)));
+		this.#townManager.getObjs().forEach(item => {
+			const option1 = document.createElement('option');
+			option1.value = item.Obj.value;
+			option1.textContent = item.Obj.text;
+			const option2 = document.createElement('option');
+			option2.value = item.Obj.value;
+			option2.textContent = item.Obj.text;
+			let selectBox = document.getElementById('start-point');
+			selectBox.appendChild(option1);
+			selectBox = document.getElementById('finish-point');
+			selectBox.appendChild(option2);
+		});
+		const storedTickets = JSON.parse(localStorage.getItem('tickets'));
+		storedTickets.forEach(({ 
+			start_place, 
+			end_place, 
+			start_date, 
+			finish_date, 
+			cost, 
+			type, 
+			purchased 
+		}) => this.#ticketManager.addObj(
+											new Ticket(
+													start_place, 
+													end_place, 
+													new Date(start_date), 
+													new Date(finish_date), 
+													cost, 
+													type, 
+													purchased,
+												)));
+		this.#isAutorized = JSON.parse(localStorage.getItem('isAutorized'));
+		const header = document.getElementById('header-view-home');
+		if (this.#isAutorized) {
+			header.innerHTML = this.autorizedTemplate;
+		} else {
+			header.innerHTML = this.unautorizedTemplate;
+		}
+		this.#restoreMenuButton();
+	}
+	
+	navigateTo(formId) {
+		document.querySelectorAll('.form').forEach(form => {
+			form.classList.remove('active');
+		});
+		const home = document.getElementById('home-page');
+		if (formId === 'home-page') {
+			const header = document.getElementById('header-view-browsing');
+			header.innerHTML = '';
+			const header_home = document.getElementById('header-view-home');
+			if (this.#isAutorized) {
+				header_home.innerHTML = this.autorizedTemplate;
+			} else {
+				header_home.innerHTML = this.unautorizedTemplate;
+			}
+			this.#restoreMenuButton();
+			home.classList.add('active');
+			return;
+		}
+		if (formId === 'browsing') {
+			const header = document.getElementById('header-view-home');
+			header.innerHTML = '';
+			const header_browsing = document.getElementById('header-view-browsing');
+			if (this.#isAutorized) {
+				header_browsing.innerHTML = this.autorizedTemplate;
+			} else {
+				header_browsing.innerHTML = this.unautorizedTemplate;
+			}
+			this.#restoreMenuButton();
+			const targetForm = document.getElementById(formId);
+			targetForm.classList.add('active');
+			this.#currentPage = 0;
+			this.#findTickets();
+			return;
+		}
+		const targetForm = document.getElementById(formId);
+		if (targetForm) {
+			home.classList.add('active');
+			targetForm.classList.add('active');
+		} else {
+			console.error(`Form with id "${formId}" not found.`);
+		}
+	}
+	
+	ticketTemplate = `
     <div class="ticket_background">
         <div class="info_vb">
             <div class="info_container"> 
@@ -366,93 +405,258 @@ const ticketTemplate = `
             </div>
         </div>
     </div>`;
+	
+	#findTickets() {
+		const ticket_properties = {};
+		const startPlace = document.getElementById('start-point').value;
+		if (startPlace !== 'none') {
+			ticket_properties["start_place"] = startPlace;
+		}
+		const endPlace = document.getElementById('finish-point').value;
+		if (endPlace !== 'none') {
+			ticket_properties["end_place"] = endPlace;
+		}
+		const type = document.getElementById('type').value;
+		if (type !== 'none') {
+			ticket_properties["type"] = type;
+		}
+		const startDate = document.getElementById('input_date_start').value;
+		if (startDate !== '') {
+			ticket_properties["start_date"] = new Date(startDate);
+		}
+		const endDate = document.getElementById('input_date_finish').value;
+		if (endDate !== '') {
+			ticket_properties["finish_date"] = new Date(endDate);
+		}
+		const minCost = document.getElementById('input_price_min').value;
+		if (minCost !== '') {
+			ticket_properties["min_cost"] = minCost;
+		}
+		const maxCost = document.getElementById('input_price_max').value;
+		if (maxCost !== '') {
+			ticket_properties["max_cost"] = maxCost;
+		}
+		ticket_properties['purchased'] = false;
+		this.#filteredTickets = this.#ticketManager.getObjs(0, 0, ticket_properties);
+		this.#renderTickets(this.#filteredTickets.slice(0, Math.min(3, this.#filteredTickets.length)));
+	}
 
-function findTickets() {
-	const ticket_properties = {};
-	const startPlace = document.getElementById('start-point').value;
-	if (startPlace !== 'none') {
-		ticket_properties["start_place"] = startPlace;
+	#renderTickets(tickets) {
+		const ticketsContainer = document.getElementById('ticket_container');
+		ticketsContainer.innerHTML = '';
+		const ticketsToRender = tickets.slice(0, 3);
+		ticketsToRender.forEach(ticket => {
+			const ticketElement = document.createElement('div');
+			ticketElement.innerHTML = this.ticketTemplate;
+			ticketElement.querySelector('.start-place').textContent = this.#townManager.getObjByValue(ticket.Obj.start_place).Obj.text;
+			ticketElement.querySelector('.end-place').textContent = this.#townManager.getObjByValue(ticket.Obj.end_place).Obj.text;
+			ticketElement.querySelector('.type-field').textContent = this.#ticketTypeManager.getObjByValue(ticket.Obj.type).Obj.text;
+			ticketElement.querySelector('.start-date').textContent = ticket.Obj.start_date.toLocaleDateString(
+				'ru-RU', {
+							day: '2-digit',
+							month: '2-digit',
+							year: 'numeric',
+							hour: '2-digit',
+							minute: '2-digit',
+					});
+			ticketElement.querySelector('.end-date').textContent = ticket.Obj.finish_date.toLocaleDateString(
+				'ru-RU', {
+							day: '2-digit',
+							month: '2-digit',
+							year: 'numeric',
+							hour: '2-digit',
+							minute: '2-digit',
+					});
+			ticketElement.querySelector('.cost').textContent = ticket.Obj.cost + ' ₽';
+			ticketsContainer.appendChild(ticketElement);
+		});
 	}
-	const endPlace = document.getElementById('finish-point').value;
-	if (endPlace !== 'none') {
-		ticket_properties["end_place"] = endPlace;
+
+	prevPage() {
+		this.#currentPage = this.#currentPage - 1;
+		let new_start = this.#currentPage * 3;
+		if (new_start < 0) {
+			this.#currentPage = Math.floor((this.#filteredTickets.length - 1) / 3);
+			new_start = this.#currentPage * 3;
+			this.#renderTickets(this.#filteredTickets.slice(new_start, Math.min(new_start + 3, this.#filteredTickets.length)));
+		} else {
+			this.#renderTickets(this.#filteredTickets.slice(new_start, Math.min(new_start + 3, this.#filteredTickets.length)));
+		}
 	}
-	const type = document.getElementById('type').value;
-	if (type !== 'none') {
-		ticket_properties["type"] = type;
+
+	nextPage() {
+		this.#currentPage = this.#currentPage + 1;
+		let new_start = this.#currentPage * 3;
+		if (new_start >= this.#filteredTickets.length) {
+			this.#renderTickets(this.#filteredTickets.slice(0, Math.min(3, this.#filteredTickets.length)));
+			this.#currentPage = 0;
+		} else {
+			this.#renderTickets(this.#filteredTickets.slice(new_start, Math.min(new_start + 3, this.#filteredTickets.length)));
+		}
 	}
-	const startDate = document.getElementById('input_date_start').value;
-	if (startDate !== '') {
-		ticket_properties["start_date"] = new Date(startDate);
+	
+	#restoreMenuButton() {
+		const button = document.getElementById('menu-button');
+		const menu = document.getElementById('menu');
+		let isHovering = false;
+		button.addEventListener('mouseenter', () => {
+			button.classList.add('hover');
+			menu.classList.add('active');
+			isHovering = true;
+		});
+		button.addEventListener('mouseleave', () => {
+			isHovering = false;
+			setTimeout(() => {
+				if (!isHovering) {
+					button.classList.remove('hover');
+					menu.classList.remove('active');
+				}
+			}, 50);
+		});
+		menu.addEventListener('mouseenter', () => {
+			button.classList.add('hover');
+			menu.classList.add('active');
+			isHovering = true;
+		});
+		menu.addEventListener('mouseleave', () => {
+			isHovering = false;
+			setTimeout(() => {
+				if (!isHovering) {
+					button.classList.remove('hover');
+					menu.classList.remove('active');
+				}
+			}, 50);
+		});
 	}
-	const endDate = document.getElementById('input_date_finish').value;
-	if (endDate !== '') {
-		ticket_properties["finish_date"] = new Date(endDate);
+	
+	exit() {
+		this.#isAutorized = false;
+		localStorage.setItem('isAutorized', this.#isAutorized);
+		const header = document.getElementById('header-view-home');
+		header.innerHTML = this.unautorizedTemplate;
+		this.#restoreMenuButton();
+		document.querySelectorAll('input').forEach(input => {
+			input.value = '';
+		});
+		document.querySelectorAll('select').forEach(select => {
+			select.selectedIndex = 0;
+		});
+		this.navigateTo('home-page');
 	}
-	const minCost = document.getElementById('input_price_min').value;
-	if (minCost !== '') {
-		ticket_properties["min_cost"] = minCost;
+	
+	logIn() {
+		const email = document.getElementById('login');
+		let isMistake = false;
+		if (email.value === '' || !Validator.validateEmail(email.value)) {
+			email.style.border = '2px solid red';
+			isMistake = true;
+		} else {
+			email.style.border = '2px solid green';
+		}
+		const password = document.getElementById('login-password');
+		if (password.value === '' || !Validator.validatePassword(password.value)) {
+			password.style.border = '2px solid red';
+			isMistake = true;
+		}
+		if (isMistake) {
+			return;
+		}
+		if (localStorage.getItem(email.value) != password.value) {
+			password.style.border = '2px solid red';
+			return;
+		}
+		email.style.border = 'none';
+		email.value = '';
+		password.style.border = 'none';
+		password.value = '';
+		this.#isAutorized = true;
+		localStorage.setItem('isAutorized', this.#isAutorized);
+		const header = document.getElementById('header-view-home');
+		header.innerHTML = this.autorizedTemplate;
+		this.#restoreMenuButton();
+		this.navigateTo('home-page');
 	}
-	const maxCost = document.getElementById('input_price_max').value;
-	if (maxCost !== '') {
-		ticket_properties["max_cost"] = maxCost;
+	
+	signIn() {
+		const FIO = document.getElementById('FIO');
+		let isMistake = false;
+		if (FIO.value === '' || !Validator.validateFIO(FIO.value)) {
+			FIO.style.border = '2px solid red';
+			isMistake = true;
+		} else {
+			FIO.style.border = '2px solid green';
+		}
+		const passport = document.getElementById('passport');
+		if (passport.value === '' || !Validator.validatePassport(passport.value)) {
+			passport.style.border = '2px solid red';
+			isMistake = true;
+		} else {
+			passport.style.border = '2px solid green';
+		}
+		const email = document.getElementById('e-mail');
+		if (email.value === '' || !Validator.validateEmail(email.value)) {
+			email.style.border = '2px solid red';
+			isMistake = true;
+		} else {
+			email.style.border = '2px solid green';
+		}
+		const password = document.getElementById('password');
+		if (password.value === '' || !Validator.validatePassword(password.value)) {
+			password.style.border = '2px solid red';
+			isMistake = true;
+		} else {
+			password.style.border = '2px solid green';
+		}
+		const password_repeat = document.getElementById('password-repeat');
+		if (password_repeat.value === '' || !Validator.validatePasswordRepeat(password.value, password_repeat.value)) {
+			password_repeat.style.border = '2px solid red';
+			isMistake = true;
+		} else {
+			password_repeat.style.border = '2px solid green';
+		}
+		if (isMistake) {
+			return;
+		}
+		FIO.style.border = 'none';
+		FIO.value = '';
+		passport.style.border = 'none';
+		passport.value = '';
+		email.style.border = 'none';
+		email.value = '';
+		password.style.border = 'none';
+		password.value = '';
+		password_repeat.style.border = 'none';
+		password_repeat.value = '';
+		if (localStorage.getItem(email.value) != null) {
+			document.getElementById('login').value = email.value;
+			this.navigateTo('log-in');
+			return;
+		}
+		localStorage.setItem(email.value, password.value);
+		this.#isAutorized = true;
+		localStorage.setItem('isAutorized', this.#isAutorized);
+		const header = document.getElementById('header-view-home');
+		header.innerHTML = this.autorizedTemplate;
+		this.#restoreMenuButton();
+		this.navigateTo('home-page');
 	}
-	ticket_properties['purchased'] = false;
-	filteredTickets = ticketManager.getObjs(0, 0, ticket_properties);
-	console.log(filteredTickets);
-	renderTickets(filteredTickets.slice(0, Math.min(3, filteredTickets.length)));
+	
+	unautorizedTemplate = `
+    <button onclick="viewModel.navigateTo('log-in')" class="log_in_button">Вход</button> 
+	<button onclick="viewModel.navigateTo('sign-in')" class="sign_in_button">Регистрация</button> 
+	<button id="menu-button" class="menu_button">Меню</button>
+	<div class="header_underline"></div>
+	<img onclick="viewModel.navigateTo('home-page')" class="logo_icon" alt="Company logo" src="resources/Logo.png">
+	<img class="log_in_icon" alt="Log in icon" src="resources/Log in.png">
+	<img class="sign_in_icon" alt="Sign in icon" src="resources/Sign in.png">`;
+	
+	autorizedTemplate = `
+    <button onclick="viewModel.exit()" class="log_out_button">Выход</button>
+	<button id="menu-button" class="menu_button">Меню</button>
+	<div class="header_underline"></div>
+	<img onclick="viewModel.navigateTo('home-page')" class="logo_icon" alt="Company logo" src="resources/Logo.png">
+	<img class="log_out_icon" alt="Log in icon" src="resources/Log out.png">`;
 }
 
-function renderTickets(tickets) {
-	const ticketsContainer = document.getElementById('ticket_container');
-    ticketsContainer.innerHTML = '';
-    const ticketsToRender = tickets.slice(0, 3);
-    ticketsToRender.forEach(ticket => {
-        const ticketElement = document.createElement('div');
-        ticketElement.innerHTML = ticketTemplate;
-        ticketElement.querySelector('.start-place').textContent = townManager.getObjByValue(ticket.Obj.start_place).Obj.text;
-        ticketElement.querySelector('.end-place').textContent = townManager.getObjByValue(ticket.Obj.end_place).Obj.text;
-        ticketElement.querySelector('.type-field').textContent = ticketTypeManager.getObjByValue(ticket.Obj.type).Obj.text;
-        ticketElement.querySelector('.start-date').textContent = ticket.Obj.start_date.toLocaleDateString(
-		'ru-RU', {
-					day: '2-digit',
-					month: '2-digit',
-					year: 'numeric',
-					hour: '2-digit',
-					minute: '2-digit',
-				});
-        ticketElement.querySelector('.end-date').textContent = ticket.Obj.finish_date.toLocaleDateString(
-		'ru-RU', {
-					day: '2-digit',
-					month: '2-digit',
-					year: 'numeric',
-					hour: '2-digit',
-					minute: '2-digit',
-				});
-        ticketElement.querySelector('.cost').textContent = ticket.Obj.cost + ' ₽';
-        ticketsContainer.appendChild(ticketElement);
-    });
-}
-
-function prev_page() {
-	currentPage = currentPage - 1;
-	new_start = currentPage * 3;
-	if (new_start < 0) {
-		currentPage = Math.floor((filteredTickets.length - 1) / 3);
-		new_start = currentPage * 3;
-		renderTickets(filteredTickets.slice(new_start, Math.min(new_start + 3, filteredTickets.length)));
-	} else {
-		renderTickets(filteredTickets.slice(new_start, Math.min(new_start + 3, filteredTickets.length)));
-	}
-}
-
-function next_page() {
-	currentPage = currentPage + 1;
-	new_start = currentPage * 3;
-	if (new_start >= filteredTickets.length) {
-		renderTickets(filteredTickets.slice(0, Math.min(3, filteredTickets.length)));
-		currentPage = 0;
-	} else {
-		renderTickets(filteredTickets.slice(new_start, Math.min(new_start + 3, filteredTickets.length)));
-	}
-}
+viewModel = new ViewModel();
+viewModel.restore();

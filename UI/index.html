@@ -15,15 +15,7 @@
 
 <div id="home-page" class="form">
 	<div class="home-page"> 
-		<header>
-			<button onclick="navigateTo('log-in')" class="log_in_button">Вход</button> 
-			<button onclick="navigateTo('sign-in')" class="sign_in_button">Регистрация</button> 
-			<button id="menu-button" class="menu_button">Меню</button>
-			<div class="header_underline"></div>
-			<img onclick="navigateTo('home-page')" class="logo_icon" alt="Company logo" src="resources/Logo.png">
-			<img class="log_in_icon" alt="Sign in icon" src="resources/Log in.png">
-			<img class="sign_in_icon" alt="Log in icon" src="resources/Sign in.png">
-		</header>
+		<header id="header-view-home"></header>
 		
 		<main>
 			<img class="news1_icon" alt="News 1" src="resources/News-1.png">
@@ -32,7 +24,7 @@
 			<img class="news2_icon" alt="News 2" src="resources/News-2.png">
 			<div class="news2_text_header">Скоро наши поезда выйдут на орбиту!</div>
 			<div class="news2_main_text">С нами, хоть в космос! Комфортные поездки, захватывающие маршруты и сервис на высоте — ваши путешествия выходят на новый уровень.</div>
-			<button onclick="navigateTo('error')" class="more_button">Подробнее-></button>
+			<button onclick="viewModel.navigateTo('error')" class="more_button">Подробнее-></button>
 			<div class="header_gradient"></div> 
 			<div class="footer_gradient"></div>	
 		</main>
@@ -47,61 +39,53 @@
 					<p class="paragraph">e-mail: Railways@rail.by</p> 
 				</span> 
 			</div>
-			<div onclick="navigateTo('faq')" class="faq">FAQ</div>
+			<div onclick="viewModel.navigateTo('faq')" class="faq">FAQ</div>
 		</footer> 
 	</div>
-</div> 
-
-<div id="menu" class="form">
-	<div class="menu"> 
-		<button onclick="navigateTo('log-in')" class="purchased_tickets_button">Купленные билеты</button> 
-		<button onclick="navigateTo('log-in')" class="booked_tickets_button">Забронированные билеты</button> 
-		<button onclick="navigateTo('search')" class="searching">Поиск</button>
-	</div> 
 </div>
 
 <div id="log-in" class="form">
-	<div onclick="navigateTo('home-page')" class="blacking"></div>
+	<div onclick="viewModel.navigateTo('home-page')" class="blacking"></div>
 	<div class="log-in">
 		<div class="log_in_background"></div>
 		<div class="login_e-mail">Логин (e-mail):</div>
-		<input type="text" class="input_login" placeholder="Введите логин"></input>
+		<input id="login" type="text" class="input_login" placeholder="Введите логин"></input>
 		<div class="password">Пароль:</div>
-		<input type="text" class="input_password" placeholder="Введите пароль"></input>
-		<button onclick="navigateTo('error')" class="in_button">Вход</button>
+		<input id="login-password" type="password" class="input_password" placeholder="Введите пароль"></input>
+		<button onclick="viewModel.logIn()" class="in_button">Вход</button>
 	</div>
 </div>
 
 <div id="sign-in" class="form">
-	<div onclick="navigateTo('home-page')" class="blacking"></div>
+	<div onclick="viewModel.navigateTo('home-page')" class="blacking"></div>
 	<div class="sign-in">
 		<div class="sign_in_background"></div>
 		<div class="FIO">ФИО:</div>
-		<input type="text" class="input_FIO" placeholder="Введите ФИО"></input>
+		<input id="FIO" type="text" class="input_FIO" placeholder="Введите ФИО"></input>
 		<div class="passport">Серия и номер паспорта:</div>
-		<input type="text" class="input_passport" placeholder="Введите паспортные данные"></input>
+		<input id="passport" type="text" class="input_passport" placeholder="Введите паспортные данные"></input>
 		<div class="e-mail">E-mail:</div>
-		<input type="text" class="input_e-mail" placeholder="Введите e-mail"></input>
+		<input id="e-mail" type="text" class="input_e-mail" placeholder="Введите e-mail"></input>
 		<div class="password_creation">Пароль:</div>
-		<input type="text" class="input_password_creation" placeholder="Введите пароль"></input>
+		<input id="password" type="password" class="input_password_creation" placeholder="Введите пароль"></input>
 		<div class="password_repeat">Повторите пароль:</div>
-		<input type="text" class="input_password_repeat" placeholder="Повторите пароль"></input>
-		<button onclick="navigateTo('error')" class="sign_button">Вход</button>
+		<input id="password-repeat" type="password" class="input_password_repeat" placeholder="Повторите пароль"></input>
+		<button onclick="viewModel.signIn()" class="sign_button">Вход</button>
 	</div>
 </div>
 
 <div id="error" class="form">
-	<div onclick="navigateTo('home-page')" class="blacking"></div>
+	<div onclick="viewModel.navigateTo('home-page')" class="blacking"></div>
 	<div class="error">
 		<div class="error_background"></div>
 		<div class="error_header">Произошла ошибка</div>
 		<div class="error_text">Попробуйте позже снова</div>
-		<button onclick="navigateTo('home-page')" class="ok_button">ОК</button>
+		<button onclick="viewModel.navigateTo('home-page')" class="ok_button">ОК</button>
 	</div>
 </div>
 
 <div id="search" class="form">
-	<div onclick="navigateTo('home-page')" class="blacking"></div>
+	<div onclick="viewModel.navigateTo('home-page')" class="blacking"></div>
 	<div class="search">
 		<div class="search_background"></div>
 		<div class="start_point">Начальный пункт:</div>
@@ -118,20 +102,13 @@
 		<div class="dash2"></div>
 		<div class="type">Вид билета:</div>
 		<select id="type" name="type" class="input_type"></select>
-		<button onclick="navigateTo('browsing')" class="search_button">Поиск</button>
+		<button onclick="viewModel.navigateTo('browsing')" class="search_button">Поиск</button>
 	</div>
 </div>
 
 <div id="browsing" class="form">
 	<div class="home-page"> 
-		<header>
-			<button onclick="navigateTo('log-in')" class="log_in_button">Вход</button>
-			<button onclick="navigateTo('sign-in')" class="sign_in_button">Регистрация</button>
-			<div class="header_underline"></div>
-			<img onclick="navigateTo('home-page')" class="logo_icon" alt="Company logo" src="resources/Logo.png">
-			<img class="log_in_icon" alt="Sign in icon" src="resources/Log in.png">
-			<img class="sign_in_icon" alt="Log in icon" src="resources/Sign in.png">
-		</header>
+		<header id="header-view-browsing"></header>
 		
 		<main>
 			<div class="content_container">
@@ -139,10 +116,10 @@
 					<div id="ticket_container" class="ticket_container"></div>
 				</div>
 				<div class="browsing_buttons_container">
-					<button onclick="navigateTo('home-page')" class="on_home_page_button">На главную</button> 
-					<button onclick="prev_page()" class="prev-button"><</button>
-					<button onclick="next_page()" class="next-button">></button>
-					<button onclick="navigateTo('search')" class="on_search_button">На страницу поиска</button> 
+					<button onclick="viewModel.navigateTo('home-page')" class="on_home_page_button">На главную</button> 
+					<button onclick="viewModel.prevPage()" class="prev-button"><</button>
+					<button onclick="viewModel.nextPage()" class="next-button">></button>
+					<button onclick="viewModel.navigateTo('search')" class="on_search_button">На страницу поиска</button> 
 				</div>
 			</div>
 			<div class="header_gradient"></div>
@@ -159,19 +136,27 @@
 					<p class="paragraph">e-mail: Railways@rail.by</p> 
 				</span> 
 			</div>
-			<div onclick="navigateTo('faq')" class="faq">FAQ</div>
+			<div onclick="viewModel.navigateTo('faq')" class="faq">FAQ</div>
 		</footer> 
 	</div>
 </div>
 
 <div id="faq" class="form">
-	<div onclick="navigateTo('home-page')" class="blacking"></div>
+	<div onclick="viewModel.navigateTo('home-page')" class="blacking"></div>
 	<div class="faq_form">
 		<div class="faq_background"></div>
 		<div class="faq_header">Произошла ошибка</div>
 		<div class="faq_text">У вас не могло возникнуть вопросов, так как наш UX дизайнер слишком хорошо постарался. Подумайте еще раз.</div>
-		<button onclick="navigateTo('home-page')" class="ok_button">ОК</button>
+		<button onclick="viewModel.navigateTo('home-page')" class="ok_button">ОК</button>
 	</div>
+</div>
+
+<div id="menu" class="form">
+	<div class="menu"> 
+		<button onclick="viewModel.navigateTo('log-in')" class="purchased_tickets_button">Купленные билеты</button> 
+		<button onclick="viewModel.navigateTo('log-in')" class="booked_tickets_button">Забронированные билеты</button> 
+		<button onclick="viewModel.navigateTo('search')" class="searching">Поиск</button>
+	</div> 
 </div>
 
 </body>
